@@ -1,0 +1,4 @@
+import "reshufflings.act";
+
+globals g;
+::AA::test::TEST_AA15 test(g);

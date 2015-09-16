@@ -1,0 +1,176 @@
+import "test.act";
+
+namespace AA { // active - active
+    export
+    defproc AA7 (globals g; bool xi, xo, yi, yo) {
+        // xo+;[xi];yo+;[yi];xo-;[~xi];yo-;[~yi]
+        prs<g.Vdd,g.GND> {
+            ~g.sReset & ~yi -> xo+
+            g.pReset | yi -> xo-
+
+            g._sReset & xi -> yo+
+            g.pReset | ~xi -> yo-
+        }
+    }
+    export
+    defproc AA15 (globals g; bool xi, xo, yi, yo) {
+        // xo+,yo+;[xi&yi];xo-,yo-;[~xi&~yi]
+        bool u;
+        // xo+,yo+;[xi&yi];u-;xo-,yo-;[~xi&~yi];u+
+        prs {
+            g.pReset | ~xi & ~yi -> u+
+            g._sReset & xi & yi -> u-
+
+            u => xo+
+            u => yo+
+        }
+    }
+    namespace test {
+        export
+        defproc TEST_AA7 (globals g) {
+            passive_handshaker<2> p(,);
+            AA7 aa(g, p.o[0], p.i[0], p.o[1], p.i[1]);
+        }
+        export
+        defproc TEST_AA15 (globals g) {
+            passive_handshaker<2> p(,);
+            AA15 aa(g, p.o[0], p.i[0], p.o[1], p.i[1]);
+        }
+    }
+} // namespace AA
+
+namespace PP { // passive - passive
+    export
+    defproc PP8 (globals g; bool xi, xo, yi, yo) {
+        // [xi];xo+;[yi];yo+;[~xi];xo-;[~yi];yo-
+        prs<g.Vdd, g.GND> {
+            xi & ~yo -> xo+
+            g.pReset | ~xi & yo -> xo-
+
+            yi & xo -> yo+
+            g.pReset | ~yi & ~xo -> yo-
+        }
+    }
+    export
+    defproc PP20 (globals g; bool xi, xo, yi, yo) {
+        // [xi&yi];xo+,yo+;[~xi&~yi];xo-,yo-
+        bool u;
+        // [xi&yi];u-;xo+,yo+;[~xi&~yi];u+;xo-,yo-
+        prs {
+            ~xi & ~yi -> u+
+            xi & yi -> u-
+
+            u => xo-
+            u => yo-
+        }
+    }
+    namespace test {
+        export
+        defproc TEST_PP8 (globals g) {
+            active_handshaker<2> a(g,,);
+            PP8 pp(g, a.o[0], a.i[0], a.o[1], a.i[1]);
+        }
+        export
+        defproc TEST_PP20 (globals g) {
+            active_handshaker<2> a(g,,);
+            PP8 pp(g, a.o[0], a.i[0], a.o[1], a.i[1]);
+        }
+    }
+}
+
+namespace AP { // active - passive
+    export
+    defproc AP1 (globals g; bool ai, ao, pi, po) {
+        // ao+;[ai];ao-;[~ai&pi];po+;[~pi];po-
+        bool u;
+        // ao+;[ai];u-;ao-;[~ai&pi];po+;u+;[~pi];po-
+        prs<g.Vdd, g.GND> {
+            ~g.sReset & ~ai & ~po & u -> ao+
+            g.pReset | ai & ~u -> ao-
+    
+            ~ai & pi & ~u -> po+
+            ~pi & u -> po-
+    
+            g.pReset | po -> u+
+            ai -> u-
+        }
+    }
+    export
+    defproc AP9 (globals g; bool ai, ao, pi, po) {
+        // ao+;[ai&pi];po+;ao-;[~ai&~pi];po-
+        prs<g.Vdd, g.GND> {
+            g._sReset & ~po -> ao+
+            g.pReset | po -> ao-
+
+            ai & pi -> po+
+            ~ai & ~pi -> po-
+        }
+    }
+    export
+    defproc AP16 (globals g; bool ai, ao, pi, po) {
+        // ao+;[pi];po+;[ai];ao-;[~pi];po-;[~ai]
+        prs<g.Vdd, g.GND> {
+            g._sReset & ~ai & ~po -> ao+
+            g.pReset | ai & po -> ao-
+
+            ao & pi -> po+
+            ~ao & ~pi -> po-
+        }
+    }
+    export
+    defproc AP29 (globals g; bool ai, ao, pi, po) {
+        // [pi];ao+;[ai];po+;[~pi];ao-;[~ai];po-
+        prs {
+            pi -> ao+
+            ~pi -> ao-
+
+            ai -> po+
+            ~ai -> po-
+        }
+    }
+    export
+    defproc AP36 (globals g; bool ai, ao, pi, po) {
+        // [pi];ao+,po+;[ai&~pi];ao-,po-;[~ai]
+        bool u;
+        // [pi];u+;ao+,po+;[ai&~pi];u-;ao-,po-;[~ai]
+        prs {
+            ~ai & pi -> u+
+            g.pReset | ai & ~pi -> u-
+
+            u => ao+
+            u => po+
+        }
+    }
+    namespace test {
+        export
+        defproc TEST_AP1 (globals g) {
+            active_handshaker<1> a(g,,);
+            passive_handshaker<1> p(,);
+            AP1 ap(g, p.o[0], p.i[0], a.o[0], a.i[0]);
+        }
+        export
+        defproc TEST_AP9 (globals g) {
+            active_handshaker<1> a(g,,);
+            passive_handshaker<1> p(,);
+            AP9 ap(g, p.o[0], p.i[0], a.o[0], a.i[0]);
+        }
+        export
+        defproc TEST_AP16 (globals g) {
+            active_handshaker<1> a(g,,);
+            passive_handshaker<1> p(,);
+            AP16 ap(g, p.o[0], p.i[0], a.o[0], a.i[0]);
+        }
+        export
+        defproc TEST_AP29 (globals g) {
+            active_handshaker<1> a(g,,);
+            passive_handshaker<1> p(,);
+            AP29 ap(g, p.o[0], p.i[0], a.o[0], a.i[0]);
+        }
+        export
+        defproc TEST_AP36 (globals g) {
+            active_handshaker<1> a(g,,);
+            passive_handshaker<1> p(,);
+            AP29 ap(g, p.o[0], p.i[0], a.o[0], a.i[0]);
+        }
+    } // namespace test
+} // namespace AP

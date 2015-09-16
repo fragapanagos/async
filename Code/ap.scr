@@ -1,0 +1,11 @@
+set_principal test.ap.ai
+set_principal test.ap.ao
+set_principal test.ap.pi
+set_principal test.ap.po
+
+source reset.scr
+
+watch test.ap.ai
+watch test.ap.ao
+watch test.ap.pi
+watch test.ap.po

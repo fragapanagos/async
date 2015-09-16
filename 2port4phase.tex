@@ -1,0 +1,257 @@
+\documentclass{article}
+\usepackage{mystyle}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{multicol}
+
+\newcommand{\ttt}[1]{\texttt{#1}}
+\begin{document}
+
+\title{4-phase reshufflings with 2 ports}
+\author{}
+\maketitle
+
+This document lists 2 port, 4-phase HSE reshufflings and their implementations in PRS. By symmetry, some reshufflings are redundant. Specifically, $\texttt{[}x_i\land\!y_i\texttt{]}$ is the same as $\texttt{[}y_i\land\!x_i\texttt{]}$, and $x_o\!\uparrow,y_o\!\uparrow$ is the same as $y_o\!\uparrow,x_o\!\uparrow$. In addition, when the ports are both active or both passive, their names are interchangeable, which makes other reshufflings redundant. Redundant reshufflings are not included. Some implementations require a state variable. We use $u$ as our state variable.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Active $X$, Active $Y$}
+This combination has 30 orderings.
+
+\begin{hse}
+ 0) xo+;[xi];xo-;[~xi];yo+;[yi];yo-;[~yi]
+ 1) xo+;[xi];xo-,yo+;[~xi&yi];yo-;[~yi]
+ 2) xo+;[xi];xo-,yo+;[yi];yo-;[~xi&~yi]
+ 3) xo+;[xi];xo-;yo+;[~xi&yi];yo-;[~yi]
+ 4) xo+;[xi];xo-;yo+;[yi];yo-;[~xi&~yi]
+ 5) xo+;[xi];yo+;xo-;[~xi&yi];yo-;[~yi]
+ 6) xo+;[xi];yo+;xo-;[yi];yo-;[~xi&~yi]
+ 7) xo+;[xi];yo+;[yi];xo-;[~xi];yo-;[~yi]
+ 8) xo+;[xi];yo+;[yi];xo-,yo-;[~xi&~yi]
+ 9) xo+;[xi];yo+;[yi];xo-;yo-;[~xi&~yi]
+10) xo+;[xi];yo+;[yi];yo-;xo-;[~xi&~yi]
+11) xo+;[xi];yo+;[yi];yo-;[~yi];xo-;[~xi]
+12) xo+,yo+;[xi];xo-;[~xi&yi];yo-;[~yi]
+13) xo+,yo+;[xi];xo-;[yi];yo-;[~xi&~yi]
+14) xo+,yo+;[xi&yi];xo-;[~xi];yo-;[~yi]
+15) xo+,yo+;[xi&yi];xo-,yo-;[~xi&~yi]
+16) xo+,yo+;[xi&yi];xo-;yo-;[~xi&~yi]
+17) xo+,yo+;[xi&yi];yo-;xo-;[~xi&~yi]
+18) xo+,yo+;[xi&yi];yo-;[~yi];xo-;[~xi]
+19) xo+,yo+;[yi];yo-;[xi];xo-;[~xi&~yi]
+20) xo+,yo+;[yi];yo-;[xi&~yi];xo-;[~xi]
+21) xo+;yo+;[xi];xo-;[~xi&yi];yo-;[~yi]
+22) xo+;yo+;[xi];xo-;[yi];yo-;[~xi&~yi]
+23) xo+;yo+;[xi&yi];xo-;[~xi];yo-;[~yi]
+24) xo+;yo+;[xi&yi];xo-,yo-;[~xi&~yi]
+25) xo+;yo+;[xi&yi];xo-;yo-;[~xi&~yi]
+26) xo+;yo+;[xi&yi];yo-;xo-;[~xi&~yi]
+27) xo+;yo+;[xi&yi];yo-;[~yi];xo-;[~xi]
+28) xo+;yo+;[yi];yo-;[xi];xo-;[~xi&~yi]
+29) xo+;yo+;[yi];yo-;[xi&~yi];xo-;[~xi]
+\end{hse}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{7}
+\begin{prs2}
+~yi -> xo+
+yo -> xo-
+
+xo -> yo+
+~xi -> yo-
+\end{prs2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{15}
+\begin{prs2}
+u -> xo+
+~u -> xo-
+
+u -> yo+
+~u -> yo-
+
+~xi & ~yi -> u+
+xi & yi -> u-
+\end{prs2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagebreak
+\section{Passive $X$, Passive $Y$}
+This combination has 28 orderings.
+
+\begin{hse}
+ 1) [xi];xo+;[~xi];xo-;[yi];yo+;[~yi];yo-
+ 2) [xi];xo+;[~xi&yi];xo-,yo+;[~yi];yo-
+ 3) [xi];xo+;[~xi&yi];xo-;yo+;[~yi];yo-
+ 4) [xi];xo+;[~xi&yi];yo+;xo-;[~yi];yo-
+ 5) [xi];xo+;[~xi&yi];yo+;[~yi];xo-,yo-
+ 6) [xi];xo+;[~xi&yi];yo+;[~yi];xo-;yo-
+ 7) [xi];xo+;[~xi&yi];yo+;[~yi];yo-;xo-
+ 8) [xi];xo+;[yi];yo+;[~xi];xo-;[~yi];yo-
+ 9) [xi];xo+;[yi];yo+;[~xi&~yi];xo-,yo-
+10) [xi];xo+;[yi];yo+;[~xi&~yi];xo-;yo-
+11) [xi];xo+;[yi];yo+;[~xi&~yi];yo-;xo-
+12) [xi];xo+;[yi];yo+;[~yi];yo-;[~xi];xo-
+13) [xi&yi];xo+;[~xi];xo-,yo+;[~yi];yo-
+14) [xi&yi];xo+;[~xi];xo-;yo+;[~yi];yo-
+15) [xi&yi];xo+;[~xi];yo+;xo-;[~yi];yo-
+16) [xi&yi];xo+;[~xi];yo+;[~yi];xo-,yo-
+17) [xi&yi];xo+;[~xi];yo+;[~yi];xo-;yo-
+18) [xi&yi];xo+;[~xi];yo+;[~yi];yo-;xo-
+19) [xi&yi];xo+,yo+;[~xi];xo-;[~yi];yo-
+20) [xi&yi];xo+,yo+;[~xi&~yi];xo-,yo-
+21) [xi&yi];xo+,yo+;[~xi&~yi];xo-;yo-
+22) [xi&yi];xo+,yo+;[~xi&~yi];yo-;xo-
+23) [xi&yi];xo+,yo+;[~yi];yo-;[~xi];xo-
+24) [xi&yi];xo+;yo+;[~xi];xo-;[~yi];yo-
+25) [xi&yi];xo+;yo+;[~xi&~yi];xo-,yo-
+26) [xi&yi];xo+;yo+;[~xi&~yi];xo-;yo-
+27) [xi&yi];xo+;yo+;[~xi&~yi];yo-;xo-
+28) [xi&yi];xo+;yo+;[~yi];yo-;[~xi];xo-
+\end{hse}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{8}
+\begin{prs2}
+xi & ~yo -> xo+
+~xi & yo -> xo-
+
+yi & xo -> yo+
+~yi & ~xo-> yo-
+\end{prs2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{20}
+\begin{prs2}
+~u -> yo+
+u-> yo-
+
+~u -> xo+
+u-> xo-
+
+xi & yi -> u-
+~xi & ~yi -> u+
+\end{prs2}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagebreak
+\section{Active $A$, Passive $P$}
+This combination has 60 orderings. 
+
+\begin{multicols}{2}
+\begin{hse}
+ 1) ao+;[ai];ao-;[~ai&pi];po+;[~pi];po-
+ 2) ao+;[ai];ao-;[pi];po+;[~ai&~pi];po-
+ 3) ao+;[ai];ao-;[pi];po+;[~pi];po-;[~ai]
+ 4) ao+;[ai&pi];ao-;[~ai];po+;[~pi];po-
+ 5) ao+;[ai&pi];ao-,po+;[~ai&~pi];po-
+ 6) ao+;[ai&pi];ao-,po+;[~pi];po-;[~ai]
+ 7) ao+;[ai&pi];ao-;po+;[~ai&~pi];po-
+ 8) ao+;[ai&pi];ao-;po+;[~pi];po-;[~ai]
+ 9) ao+;[ai&pi];po+;ao-;[~ai&~pi];po-
+10) ao+;[ai&pi];po+;ao-;[~pi];po-;[~ai]
+11) ao+;[ai&pi];po+;[~pi];ao-;[~ai];po-
+12) ao+;[ai&pi];po+;[~pi];ao-,po-;[~ai]
+13) ao+;[ai&pi];po+;[~pi];ao-;po-;[~ai]
+14) ao+;[ai&pi];po+;[~pi];po-;ao-;[~ai]
+15) ao+;[pi];po+;[ai];ao-;[~ai&~pi];po-
+16) ao+;[pi];po+;[ai];ao-;[~pi];po-;[~ai]
+17) ao+;[pi];po+;[ai&~pi];ao-;[~ai];po-
+18) ao+;[pi];po+;[ai&~pi];ao-,po-;[~ai]
+19) ao+;[pi];po+;[ai&~pi];ao-;po-;[~ai]
+20) ao+;[pi];po+;[ai&~pi];po-;ao-;[~ai]
+21) ao+;[pi];po+;[~pi];po-;[ai];ao-;[~ai]
+22) [pi];ao+;[ai];ao-;[~ai];po+;[~pi];po-
+23) [pi];ao+;[ai];ao-,po+;[~ai&~pi];po-
+24) [pi];ao+;[ai];ao-,po+;[~pi];po-;[~ai]
+25) [pi];ao+;[ai];ao-;po+;[~ai&~pi];po-
+26) [pi];ao+;[ai];ao-;po+;[~pi];po-;[~ai]
+27) [pi];ao+;[ai];po+;ao-;[~ai&~pi];po-
+28) [pi];ao+;[ai];po+;ao-;[~pi];po-;[~ai]
+29) [pi];ao+;[ai];po+;[~pi];ao-;[~ai];po-
+30) [pi];ao+;[ai];po+;[~pi];ao-,po-;[~ai]
+\end{hse}
+\begin{hse}
+31) [pi];ao+;[ai];po+;[~pi];ao-;po-;[~ai]
+32) [pi];ao+;[ai];po+;[~pi];po-;ao-;[~ai]
+33) [pi];ao+,po+;[ai];ao-;[~ai&~pi];po-
+34) [pi];ao+,po+;[ai];ao-;[~pi];po-;[~ai]
+35) [pi];ao+,po+;[ai&~pi];ao-;[~ai];po-
+36) [pi];ao+,po+;[ai&~pi];ao-,po-;[~ai]
+37) [pi];ao+,po+;[ai&~pi];ao-;po-;[~ai]
+38) [pi];ao+,po+;[ai&~pi];po-;ao-;[~ai]
+39) [pi];ao+,po+;[~pi];po-;[ai];ao-;[~ai]
+40) [pi];ao+;po+;[ai];ao-;[~ai&~pi];po-
+41) [pi];ao+;po+;[ai];ao-;[~pi];po-;[~ai]
+42) [pi];ao+;po+;[ai&~pi];ao-;[~ai];po-
+43) [pi];ao+;po+;[ai&~pi];ao-,po-;[~ai]
+44) [pi];ao+;po+;[ai&~pi];ao-;po-;[~ai]
+45) [pi];ao+;po+;[ai&~pi];po-;ao-;[~ai]
+46) [pi];ao+;po+;[~pi];po-;[ai];ao-;[~ai]
+47) [pi];po+;ao+;[ai];ao-;[~ai&~pi];po-
+48) [pi];po+;ao+;[ai];ao-;[~pi];po-;[~ai]
+49) [pi];po+;ao+;[ai&~pi];ao-;[~ai];po-
+50) [pi];po+;ao+;[ai&~pi];ao-,po-;[~ai]
+51) [pi];po+;ao+;[ai&~pi];ao-;po-;[~ai]
+52) [pi];po+;ao+;[ai&~pi];po-;ao-;[~ai]
+53) [pi];po+;ao+;[~pi];po-;[ai];ao-;[~ai]
+54) [pi];po+;[~pi];ao+;[ai];ao-;[~ai];po-
+55) [pi];po+;[~pi];ao+;[ai];ao-,po-;[~ai]
+56) [pi];po+;[~pi];ao+;[ai];ao-;po-;[~ai]
+57) [pi];po+;[~pi];ao+;[ai];po-;ao-;[~ai]
+58) [pi];po+;[~pi];ao+,po-;[ai];ao-;[~ai]
+59) [pi];po+;[~pi];ao+;po-;[ai];ao-;[~ai]
+60) [pi];po+;[~pi];po-;ao+;[ai];ao-;[~ai]
+\end{hse}
+\end{multicols}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{1}
+\begin{prs2}
+~ai & ~po & u -> ao+
+ai & ~u -> ao-
+
+~ai & pi & ~u -> po+
+~pi & u -> po-
+
+po -> u+
+ai -> u-
+\end{prs2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{9}
+\begin{prs2}
+~po -> ao+
+po -> ao-
+
+ai & pi -> po+
+~ai & ~pi -> po-
+\end{prs2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{16}
+\begin{prs2}
+~ai & ~po -> ao+
+ai & po -> ao-
+
+ao & pi -> po+
+~ao & ~pi -> po-
+\end{prs2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{29}
+\begin{prs2}
+pi -> ao+
+~pi -> ao-
+
+ai -> po+
+~ai -> po-
+\end{prs2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{36}
+\begin{prs2}
+u -> ao+
+~u -> ao-
+
+u -> po+
+u -> po-
+
+~ai & pi -> u+
+ai & ~pi -> u-
+\end{prs2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

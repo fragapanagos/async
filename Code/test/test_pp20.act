@@ -1,0 +1,4 @@
+import "reshufflings.act";
+
+globals g;
+::PP::test::TEST_PP20 test(g);

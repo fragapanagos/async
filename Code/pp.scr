@@ -1,0 +1,11 @@
+set_principal test.pp.xi
+set_principal test.pp.xo
+set_principal test.pp.yi
+set_principal test.pp.yo
+
+source reset.scr
+
+watch test.pp.xi
+watch test.pp.xo
+watch test.pp.yi
+watch test.pp.yo

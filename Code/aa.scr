@@ -1,0 +1,11 @@
+set_principal test.aa.xi
+set_principal test.aa.xo
+set_principal test.aa.yi
+set_principal test.aa.yo
+
+source reset.scr
+
+watch test.aa.xi
+watch test.aa.xo
+watch test.aa.yi
+watch test.aa.yo

@@ -51,7 +51,7 @@ This combination has 30 orderings.
 \end{hse}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{7}
+\subsubsection*{7) $x_o\!\uparrow;\texttt{[}x_i\texttt{]};y_o\!\uparrow;\texttt{[}y_i\texttt{]};x_o\!\downarrow;\texttt{[}\neg x_i\texttt{]};y_o\!\downarrow;\texttt{[}\neg y_i\texttt{]}$}
 \begin{prs2}
 ~yi -> xo+
 yo -> xo-
@@ -60,7 +60,7 @@ xo -> yo+
 ~xi -> yo-
 \end{prs2}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{15}
+\subsubsection*{15) $x_o\!\uparrow,y_o\!\uparrow;\texttt{[}x_i\land y_i\texttt{]};x_o\!\downarrow,y_o\!\downarrow;\texttt{[}\neg x_i\land \neg y_i\texttt{]}$}
 \begin{prs2}
 u -> xo+
 ~u -> xo-
@@ -108,7 +108,7 @@ This combination has 28 orderings.
 28) [xi&yi];xo+;yo+;[~yi];yo-;[~xi];xo-
 \end{hse}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{8}
+\subsubsection*{8) $\texttt{[}xi\texttt{]};x_o\!\uparrow;\texttt{[}yi\texttt{]};y_o\!\uparrow;\texttt{[}\neg xi\texttt{]};x_o\!\downarrow;\texttt{[}\neg yi\texttt{]};y_o\!\downarrow$ }
 \begin{prs2}
 xi & ~yo -> xo+
 ~xi & yo -> xo-
@@ -117,7 +117,7 @@ yi & xo -> yo+
 ~yi & ~xo-> yo-
 \end{prs2}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{20}
+\subsubsection*{20) $\texttt{[}xi\land yi\texttt{]};x_o\!\uparrow,y_o\!\uparrow;\texttt{[}\neg xi\land \neg yi\texttt{]};x_o\!\downarrow,y_o\!\downarrow$}
 \begin{prs2}
 ~u -> yo+
 u-> yo-
@@ -179,10 +179,10 @@ This combination has 60 orderings.
 38) [pi];ao+,po+;[ai&~pi];po-;ao-;[~ai]
 39) [pi];ao+,po+;[~pi];po-;[ai];ao-;[~ai]
 40) [pi];ao+;po+;[ai];ao-;[~ai&~pi];po-
-41) [pi];ao+;po+;[ai];ao-;[~pi];po-;[~ai]
+41) [pi];ao+;po+;[ai];ao-;[~pi];po-;[~ai] \text{PCHB}
 42) [pi];ao+;po+;[ai&~pi];ao-;[~ai];po-
 43) [pi];ao+;po+;[ai&~pi];ao-,po-;[~ai]
-44) [pi];ao+;po+;[ai&~pi];ao-;po-;[~ai]
+44) [pi];ao+;po+;[ai&~pi];ao-;po-;[~ai] \text{WCHB}
 45) [pi];ao+;po+;[ai&~pi];po-;ao-;[~ai]
 46) [pi];ao+;po+;[~pi];po-;[ai];ao-;[~ai]
 47) [pi];po+;ao+;[ai];ao-;[~ai&~pi];po-
@@ -203,7 +203,7 @@ This combination has 60 orderings.
 \end{multicols}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{1}
+\subsubsection*{1) $a_o\!\uparrow;\texttt{[}ai\texttt{]};a_o\!\downarrow;\texttt{[}\neg ai\land pi\texttt{]};p_o\!\uparrow;\texttt{[}\neg pi\texttt{]};p_o\!\downarrow$}
 \begin{prs2}
 ~ai & ~po & u -> ao+
 ai & ~u -> ao-
@@ -215,7 +215,7 @@ po -> u+
 ai -> u-
 \end{prs2}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{9}
+\subsubsection*{9) $a_o\!\uparrow;\texttt{[}ai\land pi\texttt{]};p_o\!\uparrow;a_o\!\downarrow;\texttt{[}\neg ai\land \neg pi\texttt{]};p_o\!\downarrow$}
 \begin{prs2}
 ~po -> ao+
 po -> ao-
@@ -224,7 +224,7 @@ ai & pi -> po+
 ~ai & ~pi -> po-
 \end{prs2}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{16}
+\subsubsection*{16) $a_o\!\uparrow;\texttt{[}pi\texttt{]};p_o\!\uparrow;\texttt{[}ai\texttt{]};a_o\!\downarrow;\texttt{[}\neg pi\texttt{]};p_o\!\downarrow;\texttt{[}\neg ai\texttt{]}$}
 \begin{prs2}
 ~ai & ~po -> ao+
 ai & po -> ao-
@@ -233,7 +233,7 @@ ao & pi -> po+
 ~ao & ~pi -> po-
 \end{prs2}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{29}
+\subsubsection*{29) $\texttt{[}pi\texttt{]};a_o\!\uparrow;\texttt{[}ai\texttt{]};p_o\!\uparrow;\texttt{[}\neg pi\texttt{]};a_o\!\downarrow;\texttt{[}\neg ai\texttt{]};p_o\!\downarrow$}
 \begin{prs2}
 pi -> ao+
 ~pi -> ao-
@@ -242,7 +242,7 @@ ai -> po+
 ~ai -> po-
 \end{prs2}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{36}
+\subsubsection*{36) $\texttt{[}pi\texttt{]};a_o\!\uparrow,p_o\!\uparrow;\texttt{[}ai\land \neg pi\texttt{]};a_o\!\downarrow,p_o\!\downarrow;\texttt{[}\neg ai\texttt{]}$}
 \begin{prs2}
 u -> ao+
 ~u -> ao-
@@ -253,5 +253,25 @@ u -> po-
 ~ai & pi -> u+
 ai & ~pi -> u-
 \end{prs2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{44) $\texttt{[}pi\texttt{]};a_o\!\uparrow;p_o\!\uparrow;\texttt{[}ai\land \neg pi\texttt{]};a_o\!\downarrow;p_o\!\downarrow;\texttt{[}\neg ai\texttt{]}$ (WCHB)}
+\begin{prs2}
+~ai & pi -> ao+
+ai & ~pi -> ao-
+
+ao -> po+
+~ao -> po-
+\end{prs2}
+This is known as the weak-condition logic half buffer (WCHB).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{41) $\texttt{[}pi\texttt{]};a_o\!\uparrow;p_o\!\uparrow;\texttt{[}ai\texttt{]};a_o\!\downarrow;\texttt{[}\neg pi\texttt{]};p_o\!\downarrow;\texttt{[}\neg ai\texttt{]}$ (PCHB)}
+\begin{prs2}
+~ai & pi & ~po -> ao+
+po & ai -> ao-
+
+ao -> po+
+~ao & ~pi -> po-
+\end{prs2}
+This is known as the pre-charge half buffer (PCHB).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}

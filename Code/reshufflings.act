@@ -141,6 +141,30 @@ namespace AP { // active - passive
             u => po+
         }
     }
+    export
+    defproc AP41 (globals g; bool ai, ao, pi, po) {
+        // pre-charge half buffer (PCHB)
+        // [pi];ao+;po+;[ai];ao-;[~pi];po-;[~ai]
+        prs {
+            ~ai & pi & ~po -> ao+
+            g.pReset | po & ai -> ao-
+
+            ao -> po+
+            g.pReset | ~ao & ~pi -> po-
+        }
+    }
+    export
+    defproc AP44 (globals g; bool ai, ao, pi, po) {
+        // weak-condition logic half buffer (WCHB)
+        // [pi];ao+;po+;[ai&~pi];ao-;po-;[~ai]
+        prs {
+            ~ai & pi -> ao+
+            g.pReset | ai & ~pi -> ao-
+
+            ao -> po+
+            ~ao -> po-
+        }
+    }
     namespace test {
         export
         defproc TEST_AP1 (globals g) {
@@ -171,6 +195,18 @@ namespace AP { // active - passive
             active_handshaker<1> a(g,,);
             passive_handshaker<1> p(,);
             AP29 ap(g, p.o[0], p.i[0], a.o[0], a.i[0]);
+        }
+        export
+        defproc TEST_AP41 (globals g) {
+            active_handshaker<1> a(g,,);
+            passive_handshaker<1> p(,);
+            AP41 ap(g, p.o[0], p.i[0], a.o[0], a.i[0]);
+        }
+        export
+        defproc TEST_AP44 (globals g) {
+            active_handshaker<1> a(g,,);
+            passive_handshaker<1> p(,);
+            AP44 ap(g, p.o[0], p.i[0], a.o[0], a.i[0]);
         }
     } // namespace test
 } // namespace AP

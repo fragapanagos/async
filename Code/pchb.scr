@@ -1,0 +1,22 @@
+# default #####################################################################
+
+# source reset.scr
+
+# M2N2 ########################################################################
+
+set_principal test.pchb[1].l.m.n[0] 
+set_principal test.pchb[1].l.m.n[1]
+set_principal test.pchb[1].l.e
+set_principal test.pchb[1].r.m.n[0] 
+set_principal test.pchb[1].r.m.n[1]
+set_principal test.pchb[1].r.e
+
+source reset.scr
+
+watch test.pchb[1].l.e
+watch test.pchb[1].r.e
+
+vector l1 :1ofN 2 test.pchb[1].l.m.n[0] test.pchb[1].l.m.n[1]
+vector r1 :1ofN 2 test.pchb[1].r.m.n[0] test.pchb[1].r.m.n[1]
+vwatch l1
+vwatch r1

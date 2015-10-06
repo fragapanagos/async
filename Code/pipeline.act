@@ -6,12 +6,29 @@ namespace buffer {
     export
     template <pint N>
     defproc PCHB (globals g; e1of<N> l, r) {
+        // pre-charge half-buffer
+        bool vr, vl, _vl; // v/n detect l and r
+        c1of<N> _r;
+        prs<g.Vdd, g.GND> {
+            (: n : N :
+                r.e & l.e & l.m.n[n] -> _r.n[n]-
+                ~r.e & ~l.e -> _r.n[n]+
+
+                _r.n[n] => r.m.n[n]-
+            )
+
+            (| : n : N : ~_r.n[n]) => vr+
+            (| : n : N : l.m.n[n]) => _vl-
+            _vl => vl-
+
+            g.pReset | vr & vl -> l.e-
+            ~g.sReset & ~vr & ~vl -> l.e+
+        }
     }
     export
     template <pint N>
     defproc WCHB (globals g; e1of<N> l, r) {
-        // Weak-condition logic half buffer
-
+        // weak-condition logic half buffer
         c1of<N> _r;
         bool _le;
         prs<g.Vdd, g.GND> {
@@ -30,8 +47,8 @@ namespace buffer {
         export
         template <pint N, M>
         defproc TEST_PCHB (globals g) {
-            active_handshaker<1> s(g,,);
-            passive_handshaker<1> r(,);
+            passive_handshaker<1> s(,);
+            active_handshaker<1> r(g,,);
             PCHB<N> pchb[M];
             (; m : M : pchb[m].g = g;)
 

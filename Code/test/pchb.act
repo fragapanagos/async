@@ -1,0 +1,6 @@
+import "pipeline.act";
+
+pint N=2;
+pint M=2;
+globals g;
+buffer::test::TEST_PCHB<N, M> test(g);

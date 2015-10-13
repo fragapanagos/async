@@ -1,0 +1,10 @@
+import "datachan.act";
+
+pint M = 4;
+pint N = 2;
+pint L = 5;
+pint k = 0;
+pint mn[M];
+(; m : M : mn[m] = k;)
+globals g;
+evMx1ofN::TEST<M, N, L, mn> test(g);

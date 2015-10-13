@@ -1,0 +1,65 @@
+// let's play with valid data line
+import "lib/globals.act";
+import "channel.act";
+import "comm.act";
+
+namespace evMx1ofN {
+    template <pint M, N; pint mn[M]>
+    defproc SENDR (globals g; evMx1ofN<M, N> y) {
+        prs {
+            y.e => y.v+
+    
+            (: m : M :
+                y.e => y.m[m].n[mn[m]]+
+            )
+        }
+    
+        (; m : M :
+            (; n : N :
+                [n != mn[m] ->
+                    y.m[m].n[n] = g.GND;
+                ]
+            )
+        )
+    }
+    
+    template <pint M, N>
+    defproc NODE (globals g; evMx1ofN<M, N> x, y) {
+        prs {
+            y.e => x.e+
+            x.v => y.v+
+            (: m : M :
+                (: n : N :
+                    x.m[m].n[n] => y.m[m].n[n]+
+                )
+            )
+        }
+    }
+    
+    template <pint M, N>
+    defproc RECVR (globals g; evMx1ofN<M, N> x) {
+        bool vxd;
+        VN<M, N> vn();
+        vn.d.m = x.m;
+        prs<g.Vdd, g.GND> {
+            g.pReset | vn.d.a & x.v -> x.e-
+            ~g.sReset & ~vn.d.a & ~x.v -> x.e+
+        }
+    }
+    
+    export
+    template <pint M, N, L; pint mn[M]>
+    defproc TEST (globals g) {
+        // M, N : M groups of 1-of-N
+        // L layers
+        // mn[M] : which line to raise in each group
+        SENDR<M, N, mn> sendr(g,);
+        NODE<M, N> node[L];
+        RECVR<M, N> recvr(g,);
+    
+        (; l : L : node[l].g = g;)
+        node[0].x = sendr.y;
+        (; l : L-1 : node[l].y = node[l+1].x;)
+        node[L-1].y = recvr.x;
+    }
+}

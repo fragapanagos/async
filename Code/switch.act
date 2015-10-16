@@ -1,0 +1,42 @@
+// switch demo
+
+import "lib/globals.act";
+import "test.act";
+
+defproc SWITCH (globals g; bool xi, xo, yi, yo, ct, cf) {
+    bool _xo, _yo;
+    prs<g.Vdd, g.GND> {
+        ct & xi -> _yo-
+        g.pReset | ~cf & ~xi -> _yo+
+        yi => _xo-
+
+        _yo => yo-
+        _xo => xo-
+    }
+}
+
+defproc CTRL (bool xi, xo, yi, yo, ct, cf) {
+    bool _xo, _yo;
+    prs {
+        xi -> cf-
+        ~xi & ~yi -> cf+
+
+        ~cf -> ct+
+        cf -> ct-
+
+        ct & xi -> _yo-
+        ~xi -> _yo+
+
+        yi -> _xo-
+        ~ct -> _xo+
+
+        _yo => yo-
+        _xo => xo-
+    }
+}
+
+globals g;
+passive_handshaker<1> P(,);
+active_handshaker<1> A(g,,);
+SWITCH switch(g,,, P.o[0], P.i[0],,);
+CTRL ctrl(A.o[0], A.i[0], switch.xo, switch.xi, switch.ct, switch.cf);

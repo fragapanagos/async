@@ -1,0 +1,368 @@
+\documentclass{article}
+\usepackage{mystyle}
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This document explores merges. 
+
+What are their implementation costs?
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{controlled merge}
+
+Inputs are not exclusive.
+Control signal indicates which signal to pass.
+
+\begin{csp}
+*[S?s;
+    [s=0->P!(C0?)
+    []s=1->P!(C1?)
+    ]
+ ]
+\end{csp}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{aMx1ofN}
+
+\begin{hse}
+*[[s0&c00->p0+;[pa];c0a+;[~c00];p0-;[~pa];c0a-
+  []s0&c01->p1+;[pa];c0a+;[~c01];p1-;[~pa];c0a-
+  []s1&c10->p0+;[pa];c1a+;[~c00];p0-;[~pa];c1a-
+  []s1&c11->p1+;[pa];c1a+;[~c01];p1-;[~pa];c1a-
+ ]]
+\end{hse}
+
+I assume that the downphase of the S control signal will be acknowledged elsewhere
+
+\begin{prs2}
+s0 & c00 | s1 & c10 -> p0+
+s0 & ~c00 | s1 & ~c10 -> p0-
+
+s0 & c01 | s1 & c11 -> p1+
+s0 & ~c01 | s1 & ~c11 -> p1-
+\end{prs2}
+
+\begin{prs2}
+s0 & pa -> c0a+
+~s0 | ~pa -> c0a-
+
+s1 & pa -> c1a+
+~s1 | ~pa -> c1a-
+\end{prs2}
+
+\noindent Radix 2 accounting: 
+
+\begin{center}
+    \begin{tabular}{|r|l|l|}
+    \hline
+    rule & transistor count & comments \\ \hline
+    $p[0,1]$ & 24 & \\ \hline
+    $c[0,1]a$ & 8 & \\ \hline
+    \hline total & 32 & \\ \hline
+    \end{tabular}
+\end{center}
+
+\noindent Radix 4 accounting: 
+
+\begin{center}
+    \begin{tabular}{|r|l|l|}
+    \hline
+    rule & transistor count & comments \\ \hline
+    $p[0,1,2,3]$ & 32 & \\ \hline
+    $c[0,1,2,3]a$ & 80 & \\ \hline
+    \hline total & 112 & \\ \hline
+    \end{tabular}
+\end{center}
+
+ick...
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{eMx1ofN}
+
+\begin{hse}
+*[[pe];
+  [s0->c0e+;
+    [c00->p0+;[~pe];c0e-;[~c00];p0-
+    []c01->p1+;[~pe];c0e-;[~c01];p1-
+    ]
+  []s1->c1e+;
+    [c00->p0+;[~pe];c0e-;[~c00];p0-
+    []c01->p1+;[~pe];c0e-;[~c01];p1-
+    ]
+ ]]
+\end{hse}
+
+\begin{prs2}
+pe & s0 -> c0e+
+~pe | ~s0 -> c0e-
+
+pe & s1 -> c1e+
+~pe | ~s1 -> c1e-
+\end{prs2}
+
+\begin{prs2}
+c00 | c10 -> p0+
+~c00 & ~c10 -> p0-
+
+c01 | c11 -> p1+
+~c01 & ~c11 -> p1-
+\end{prs2}
+
+wow this is really nice. This merge knows exactly when to expect input from each child which makes the output rules combinational.
+
+\noindent Radix 2 accounting: 
+
+\begin{center}
+    \begin{tabular}{|r|l|l|}
+    \hline
+    rule & transistor count & comments \\ \hline
+    $c[0,1]e$ & 8 & \\ \hline
+    $p[0,1]$ & 8 & \\ \hline
+    \hline total & 16 & \\ \hline
+    \end{tabular}
+\end{center}
+
+\noindent Radix 4 accounting: 
+
+\begin{center}
+    \begin{tabular}{|r|l|l|}
+    \hline
+    rule & transistor count & comments \\ \hline
+    $c[0,1,2,3]e$ & 16 & \\ \hline
+    $p[0,1,2,3]$ & 32 & \\ \hline
+    \hline total & 48 & \\ \hline
+    \end{tabular}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{mutually exclusive merge}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{aMx1ofN}
+
+\begin{hse}
+*[[c00->p0+;[pa];c0a+;[~c00];p0-;[~pa];c0a-
+  []c01->p1+;[pa];c0a+;[~c01];p1-;[~pa];c0a-
+  []c10->p0+;[pa];c1a+;[~c00];p0-;[~pa];c1a-
+  []c11->p1+;[pa];c1a+;[~c01];p1-;[~pa];c1a-
+ ]]
+\end{hse}
+
+\begin{prs2}
+c00 | c10 -> p0+
+~c00 & ~c10 -> p0-
+
+c01 | c11 -> p1+
+~c01 & ~c11 -> p1-
+\end{prs2}
+
+\begin{prs2}
+(c00 | c01) & pa -> c0a+
+~pa -> c0a-
+
+(c10 | c11) & pa -> c1a+
+~pa -> c1a-
+\end{prs2}
+
+\noindent Radix 2 accounting: 
+
+\begin{center}
+    \begin{tabular}{|r|l|l|}
+    \hline
+    rule & transistor count & comments \\ \hline
+    $p[0,1]$ & 8 & \\ \hline
+    $c[0,1]a$ & 16 & \\ \hline
+    \hline total & 24 & \\ \hline
+    \end{tabular}
+\end{center}
+
+\noindent Radix 4 accounting: 
+
+\begin{center}
+    \begin{tabular}{|r|l|l|}
+    \hline
+    rule & transistor count & comments \\ \hline
+    $p[0,1,2,3]$ & 32 & \\ \hline
+    $c[0,1,2,3]a$ & 40 & \\ \hline
+    \hline total & 72 & \\ \hline
+    \end{tabular}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{avMx1ofN}
+
+\begin{hse}
+*[[c00->p0+;[pa&c0v];c0a+;[~c00];p0-;[~pa];c0a-
+  []c01->p1+;[pa&c0v];c0a+;[~c01];p1-;[~pa];c0a-
+  []c10->p0+;[pa&c1v];c1a+;[~c00];p0-;[~pa];c1a-
+  []c11->p1+;[pa&c1v];c1a+;[~c01];p1-;[~pa];c1a-
+ ]]
+\end{hse}
+
+\begin{hse}
+*[[c0v|c1v];pv+[~c0v&~c1v];pv-]
+\end{hse}
+
+\begin{prs2}
+c00 | c10 -> p0+
+~c00 & ~c10 -> p0-
+
+c01 | c11 -> p1+
+~c01 & ~c11 -> p1-
+\end{prs2}
+
+\begin{prs2}
+c0v & pa -> c0a+
+~pa -> c0a-
+
+c1v & pa -> c1a+
+~pa -> c1a-
+\end{prs2}
+
+\begin{prs2}
+c0v | c1v -> pv+
+~c0v & ~c1v -> pv-
+\end{prs2}
+
+\noindent Radix 2 accounting: 
+
+\begin{center}
+    \begin{tabular}{|r|l|l|}
+    \hline
+    rule & transistor count & comments \\ \hline
+    $p[0,1]$ & 8 & \\ \hline
+    $c[0,1]a$ & 14 & \\ \hline
+    $pv$ & 4 & \\ \hline
+    \hline total & 26 & \\ \hline
+    \end{tabular}
+\end{center}
+
+\noindent Radix 4 accounting: 
+
+\begin{center}
+    \begin{tabular}{|r|l|l|}
+    \hline
+    rule & transistor count & comments \\ \hline
+    $p[0,1,2,3]$ & 32 & \\ \hline
+    $c[0,1,2,3]a$ & 28 & \\ \hline
+    $pv$ & 8 & \\ \hline
+    \hline total & 68 & \\ \hline
+    \end{tabular}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{eMx1ofN}
+
+\begin{hse}
+*[[pe];c0e+,c1e+;
+  [c00->p0+;[~pe];c0e-;[~c00];p0-;
+  []c01->p1+;[~pe];c0e-;[~c01];p1-;
+  []c10->p0+;[~pe];c1e-;[~c00];p0-;
+  []c11->p1+;[~pe];c1e-;[~c01];p1-;
+ ]]
+\end{hse}
+
+\begin{prs2}
+pe -> c0e+
+~pe -> c0e-
+
+pe -> c1e+
+~pe -> c1e-
+\end{prs2}
+
+\begin{prs2}
+(c00 | c10) & c0e & c1e -> p0+
+~c00 & ~c10 -> p0-
+
+(c01 | c11) & c0e & c1e -> p1+
+~c01 & ~c11 -> p1-
+\end{prs2}
+
+\noindent Radix 2 accounting: 
+
+\begin{center}
+    \begin{tabular}{|r|l|l|}
+    \hline
+    rule & transistor count & comments \\ \hline
+    $c[0,1]e$ & 4 & \\ \hline
+    $p[0,1]$ & 20 & \\ \hline
+    \hline total & 24 & \\ \hline
+    \end{tabular}
+\end{center}
+
+\noindent Radix 4 accounting: 
+
+\begin{center}
+    \begin{tabular}{|r|l|l|}
+    \hline
+    rule & transistor count & comments \\ \hline
+    $p[0,1,2,3]$ & 8 & \\ \hline
+    $c[0,1,2,3]a$ & 64 & \\ \hline
+    \hline total & 72 & \\ \hline
+    \end{tabular}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{evMx1ofN}
+
+\begin{hse}
+*[[pe];c0e+,c1e+;
+  [c00->p0+;[~pe];c0e-;[~c00];p0-;
+  []c01->p1+;[~pe];c0e-;[~c01];p1-;
+  []c10->p0+;[~pe];c1e-;[~c00];p0-;
+  []c11->p1+;[~pe];c1e-;[~c01];p1-;
+ ]]
+\end{hse}
+
+\begin{hse}
+*[[c0v|c1v];pv+[~c0v&~c1v];pv-]
+\end{hse}
+
+\begin{prs2}
+pe -> c0e+
+~pe -> c0e-
+
+pe -> c1e+
+~pe -> c1e-
+\end{prs2}
+
+\begin{prs2}
+c00 & c0v | c10 & c1v -> p0+
+~c00 & ~c10 -> p0-
+
+c01 & c0v | c11 & c1v -> p1+
+~c01 & ~c11 -> p1-
+\end{prs2}
+
+\begin{prs2}
+c0v | c1v -> pv+
+~c0v & ~c1v -> pv-
+\end{prs2}
+
+\noindent Radix 2 accounting: 
+
+\begin{center}
+    \begin{tabular}{|r|l|l|}
+    \hline
+    rule & transistor count & comments \\ \hline
+    $c[0,1]e$ & 4 & \\ \hline
+    $p[0,1]$ & 20 & \\ \hline
+    \hline total & 24 & \\ \hline
+    \end{tabular}
+\end{center}
+
+\noindent Radix 4 accounting: 
+
+\begin{center}
+    \begin{tabular}{|r|l|l|}
+    \hline
+    rule & transistor count & comments \\ \hline
+    $p[0,1,2,3]$ & 8 & \\ \hline
+    $c[0,1,2,3]a$ & 64 & \\ \hline
+    \hline total & 72 & \\ \hline
+    \end{tabular}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

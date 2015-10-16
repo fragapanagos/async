@@ -1,0 +1,178 @@
+\documentclass{article}
+\usepackage{mystyle}
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+How do I build a switch?
+
+Switches come up in cases like
+
+\begin{csp}
+*[[#{C0}->Y!(X0?)
+  []#{C1}->Y!(X1?)
+ ]]
+\end{csp}
+
+where X0 and X1 are passive channels and can become true at any time
+
+\begin{hse}
+*[[c0&x0i->yo+;[yi];x0o+;[~x0i];yo-;[~yi];x0o-
+  []c1&x1i->yo+;[yi];x1o+;[~x1i];yo-;[~yi];x1o-
+ ]]
+\end{hse}
+
+Maybe we could avoid this situation entirely by making X0 and X1 active?
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{SWITCH}
+
+\begin{hse}
+*[[c&xi];yo+;[yi];xo+;
+  [~xi];yo-;[~yi];xo-]
+\end{hse}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{PRS}
+
+\begin{prs2}
+c & xi -> yo+
+c & ~xi -> yo-
+
+yi -> xo+
+~yi -> xo-
+\end{prs2}
+
+Unsure how to convert this to CMOS-implmenetable form.
+Will revise the HSE instead.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{SWITCH 2}
+
+expand c into ct and cf
+
+\begin{hse}
+*[[ct&xi];yo+;[yi];xo+;
+  [~cf&~xi];yo-;[~yi];xo-]
+\end{hse}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{PRS}
+
+\begin{prs2}
+ct & xi -> yo+
+~cf & ~xi -> yo-
+
+yi -> xo+
+~yi -> xo-
+\end{prs2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{CMOS-implementable PRS}
+
+\begin{prs2}
+ct & xi -> _yo-
+~cf & ~xi -> _yo+
+
+yi -> _xo-
+~yi -> _xo+
+\end{prs2}
+
+\begin{prs2}
+_yo -> yo-
+~_yo -> yo+
+
+_xo -> xo-
+~_xo -> xo+
+\end{prs2}
+
+\noindent accounting: 
+
+\begin{center}
+    \begin{tabular}{|r|l|l|}
+    \hline
+    rule & transistor count & comments \\ \hline
+    $\_y_o$ & 4 & \\ \hline
+    $yo$ & 4 & staticizes $\_y_o$ \\ \hline
+    $\_x_o$ & 2 & \\ \hline
+    $x_o$ & 2 & \\ \hline
+    \hline total & 12 & \\ \hline
+    \end{tabular}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{CTRL}
+
+responsible for controlling switch
+
+\begin{hse}
+*[[xi];cf-;ct+;yo+;[yi];xo+;
+  [~xi];yo-;[~yi];cf+;ct-;xo-]
+\end{hse}
+
+need to make sure that Y completes within the control sequence.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{PRS}
+
+\begin{prs2}
+xi -> cf-
+~xi & ~yi -> cf+
+
+~cf -> ct+
+cf -> ct-
+\end{prs2}
+
+\begin{prs2}
+ct & xi -> yo+
+~ct | ~xi -> yo-
+
+yi -> xo+
+~ct -> xo-
+\end{prs2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{CMOS-implementable PRS}
+
+\begin{prs2}
+xi -> cf-
+~xi & ~yi -> cf+
+
+~cf -> ct+
+cf -> ct-
+\end{prs2}
+
+\begin{prs2}
+ct & xi -> _yo-
+~ct | ~xi -> _yo+
+
+yi -> _xo-
+~ct -> _xo+
+\end{prs2}
+
+\begin{prs2}
+_yo -> yo-
+~_yo -> yo+
+
+_xo -> xo-
+~_xo -> xo+
+\end{prs2}
+
+\noindent accounting: 
+
+\begin{center}
+    \begin{tabular}{|r|l|l|}
+    \hline
+    rule & transistor count & comments \\ \hline
+    $cf$ & 7 & \\ \hline
+    $ct$ & 2 & \\ \hline
+    $\_y_o$ & 4 & \\ \hline
+    $y_o$ & 2 & \\ \hline
+    $\_x_o$ & 2 & \\ \hline
+    $x_o$ & 4 & staticizes $\_x_o$ \\ \hline
+    \hline total & 21 & \\ \hline
+    \end{tabular}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

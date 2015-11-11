@@ -1,10 +1,10 @@
 // Defines processes used in data communication
-import "channel.act";
+import "lib/channel.act";
 import "logic.act";
 
 export
 template <pint M, N>
-defproc VN (aMx1ofN<M, N> d) {
+defproc VN_aMx1ofN (aMx1ofN<M, N> d) {
     // detects data validity/neutrality on d
     // [V(d.m)];d.a+;[~V(d.m)];d.a-
     C_TREE<M> c_tree(,);
@@ -41,6 +41,22 @@ defproc VN (aMx1ofN<M, N> d) {
 }
 
 export
+template <pint N>
+defproc VN_a1ofN (a1of<N> d) {
+    // detects data validity/neutrality on d
+    // [V(d.m)];d.a+;[~V(d.m)];d.a-
+    [ N > 2 ->
+        OR<N> or(d.d, d.a);
+    [] N = 2 ->
+        bool _o;
+        NOR nor(d.d, _o);
+        prs {
+            _o => d.a-
+        }
+    ]
+}
+
+export
 template <pint M, N>
 defproc _VN (c1of<N> _d[M]; bool _o) {
     // active low version of VN
@@ -59,9 +75,20 @@ defproc _VN (c1of<N> _d[M]; bool _o) {
 }
 
 export
+template <pint N>
+defproc VN_e1ofN (e1of<N> d) {
+    // detects data validity/neutrality on d
+    // d.e+;[V(d.m)];d.e-;[~V(d.m)]
+    OR<N> or(d.d,);
+    prs {
+        or.o => d.e-
+    }
+}
+
+export
 template <pint M, N>
-defproc VN_A (eMx1ofN<M, N> d) {
-    // active version of VN
+defproc VN_eMx1ofN (eMx1ofN<M, N> d) {
+    // detects data validity/neutrality on d
     // d.e+;[V(d.m)];d.e-;[~V(d.m)]
     OR<N> or[M];
     (; m : M :
@@ -115,3 +142,4 @@ defproc A_TO_E (aMx1ofN<M, N> i; eMx1ofN<M, N> o) {
         o.e => i.a-
     }
 }
+

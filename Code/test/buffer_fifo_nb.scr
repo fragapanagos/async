@@ -1,0 +1,46 @@
+source r.scr
+
+set_principal fifo._[0].y.d[0]
+set_principal fifo._[1].y.d[0]
+set_principal fifo._[2].y.d[0]
+set_principal fifo._[3].y.d[0]
+set_principal fifo._[4].y.d[0]
+set_principal fifo._[5].y.d[0]
+set_principal fifo._[6].y.d[0]
+set_principal fifo._[7].y.d[0]
+set_principal fifo._[8].y.d[0]
+set_principal fifo._[9].y.d[0]
+set_principal fifo._[0].y.d[1]
+set_principal fifo._[1].y.d[1]
+set_principal fifo._[2].y.d[1]
+set_principal fifo._[3].y.d[1]
+set_principal fifo._[4].y.d[1]
+set_principal fifo._[5].y.d[1]
+set_principal fifo._[6].y.d[1]
+set_principal fifo._[7].y.d[1]
+set_principal fifo._[8].y.d[1]
+set_principal fifo._[9].y.d[1]
+
+vector y0 :1ofN 2 fifo._[0].y.d[0] fifo._[0].y.d[1]
+vector y1 :1ofN 2 fifo._[1].y.d[0] fifo._[1].y.d[1]
+vector y2 :1ofN 2 fifo._[2].y.d[0] fifo._[2].y.d[1]
+vector y3 :1ofN 2 fifo._[3].y.d[0] fifo._[3].y.d[1]
+vector y4 :1ofN 2 fifo._[4].y.d[0] fifo._[4].y.d[1]
+vector y5 :1ofN 2 fifo._[5].y.d[0] fifo._[5].y.d[1]
+vector y6 :1ofN 2 fifo._[6].y.d[0] fifo._[6].y.d[1]
+vector y7 :1ofN 2 fifo._[7].y.d[0] fifo._[7].y.d[1]
+vector y8 :1ofN 2 fifo._[8].y.d[0] fifo._[8].y.d[1]
+vector y9 :1ofN 2 fifo._[9].y.d[0] fifo._[9].y.d[1]
+vwatch y0
+vwatch y1
+vwatch y2
+vwatch y3
+vwatch y4
+vwatch y5
+vwatch y6
+vwatch y7
+vwatch y8
+vwatch y9
+
+step 200
+

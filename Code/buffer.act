@@ -1,0 +1,71 @@
+import "lib/globals.act";
+import "lib/channel.act";
+import "comm.act";
+import "test.act";
+
+namespace fifo {
+    export
+    defproc NB (globals g; a1of<2> x, y) {
+        prs<g.Vdd, g.GND> {
+            (: n : 2 :
+                x.d[n] => y.d[n]+
+            )
+            y.a => x.a+
+        }
+    }
+    
+    export
+    template <pint M>
+    defproc NB_CHAIN (globals g; a1of<2> x, y) {
+        NB _[M];
+        (; m : M : _[m].g = g;)
+        _[0].x = x;
+        _[M-1].y = y;
+        (; m : M-1 :
+            _[m].y = _[m+1].x;
+        )
+    }
+
+    export
+    defproc WCHB (globals g; a1of<2> x, y) {
+        prs<g.Vdd, g.GND> {
+            (: n : 2 :
+                ~y.a & x.d[n] -> y.d[n]+
+                g.pReset | y.a & ~x.d[n] -> y.d[n]-
+            )
+            (| : n : 2 : y.d[n]) => x.a+
+        }
+    }
+    
+    export
+    template <pint M>
+    defproc WCHB_CHAIN (globals g; a1of<2> x, y) {
+        WCHB _[M];
+        (; m : M : _[m].g = g;)
+        _[0].x = x;
+        _[M-1].y = y;
+        (; m : M-1 :
+            _[m].y = _[m+1].x;
+        )
+    }
+} // namespace fifo
+
+namespace test {
+    export
+    defproc SOURCE (globals g; a1of<2> y) {
+        spec {
+            mk_exclhi(y.d[0], y.d[1])
+        }
+        prs {
+            (: n : 2 :
+                ~g.sReset & ~y.a -> y.d[n]+
+                g.pReset | y.a -> y.d[n]-
+            )
+        }
+    }
+    
+    export
+    defproc SINK (a1of<2> x) {
+        ::VN_a1ofN<2> out(x);
+    }
+} // namespace test

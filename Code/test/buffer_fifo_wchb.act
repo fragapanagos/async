@@ -1,0 +1,7 @@
+import "buffer.act";
+
+globals g;
+pint M=10;
+fifo::WCHB_CHAIN<M> fifo(g,,);
+test::SOURCE src(g, fifo.x);
+test::SINK snk(fifo.y);

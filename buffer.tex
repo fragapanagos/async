@@ -1,0 +1,263 @@
+\documentclass{article}
+\usepackage{mystyle}
+
+\title{Buffering}
+\author{Sam Fok}
+
+\begin{document}
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\part{FIFOs}
+
+Stands for first-in-first-out. Each node in the buffer chain follows
+
+\begin{csp}
+*[Y!(X?)]
+\end{csp}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{PCFB}
+
+Pre-Charge Full Buffer
+
+\begin{hse}
+*[[~ya];[x0->y0+[]x1->y1+];xa+;en-;([ya];y0-,y1-),([~x0&~x1];xa-);en+]
+\end{hse}
+
+\subsubsection*{PRS}
+
+\begin{prs2}
+en & ~ya & x0 -> y0+
+~en & ya -> y0-
+
+en & ~ya & x1 -> y1+
+~en & ya -> y1-
+\end{prs2}
+
+\begin{prs2}
+en & (y0 | y1) -> xa+
+~en & ~x0 & ~x1 -> xa-
+
+xa -> en-
+~y0 & ~y1 & ~xa -> en+
+\end{prs2}
+
+\subsubsection*{CMOS-implementable PRS version 0}
+
+\begin{prs2}
+~_en & ~ya & ~_x0 -> y0+
+_en & ya -> y0-
+
+~_en & ~ya & ~_x1 -> y1+
+_en & ya -> y1-
+\end{prs2}
+
+\begin{prs2}
+y0 -> _y0-
+~y0 -> _y0+
+
+y1 -> _y1-
+~y1 -> _y1+
+\end{prs2}
+
+\begin{prs2}
+~_en & (~_y0 | ~_y1) -> xa+
+_en & _x0 & _x1 -> xa-
+
+xa -> _xa-
+~xa -> _xa+
+\end{prs2}
+
+\begin{prs2}
+xa -> en-
+~y0 & ~y1 & ~xa -> en+
+
+en -> _en-
+~en -> _en+
+\end{prs2}
+
+\subsubsection*{CMOS-implementable PRS version 1}
+
+\begin{prs2}
+en & _ya & x0 -> _y0-
+~en & ~_ya -> _y0+
+
+en & _ya & x1 -> _y1-
+~en & ~_ya -> _y1+
+\end{prs2}
+
+\begin{prs2}
+_y0 -> y0-
+~_y0 -> y0+
+
+_y1 -> y1-
+~_y1 -> y1+
+\end{prs2}
+
+\begin{prs2}
+en & (y0 | y1) -> _xa-
+~en & ~x0 & ~x1 -> _xa+
+
+_xa -> xa-
+~_xa -> xa+
+\end{prs2}
+
+\begin{prs2}
+xa -> en-
+~y0 & ~y1 & ~xa -> en+
+\end{prs2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{NB}
+
+No Buffer
+
+\begin{hse}
+*[[x0->y0+[]x1->y1+];[ya];xa+;[~x0&~x1];y0-,y1-;[~ya];xa-]
+\end{hse}
+
+\subsubsection*{PRS}
+
+\begin{prs2}
+x0 -> y0+
+~x0 -> y0-
+
+x1 -> y1+
+~x1 -> y1-
+\end{prs2}
+
+\begin{prs2}
+ya -> xa+
+~ya -> xa-
+\end{prs2}
+
+This is really just wires, but if you have to implement it...
+
+\subsubsection*{CMOS-implementable PRS version 0}
+
+\begin{prs2}
+x0 -> _y0-
+~x0 -> _y0+
+
+x1 -> _y1-
+~x1 -> _y1+
+\end{prs2}
+
+\begin{prs2}
+~_ya -> xa+
+~ya -> xa-
+\end{prs2}
+
+transistor count: 6
+
+\subsubsection*{CMOS-implementable PRS version 1}
+
+\begin{prs2}
+~_x0 -> y0+
+_x0 -> y0-
+
+~_x1 -> y1+
+_x1 -> y1-
+\end{prs2}
+
+\begin{prs2}
+ya -> _xa-
+~ya -> _xa+
+\end{prs2}
+
+transistor count: 6
+
+Alternate versions 0 and 1.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{WCHB}
+
+Weak-Condition Half Buffer
+
+\begin{hse}
+*[[~ya][x0->y0+[]x1->y1+];xa+;[ya][~x0&~x1];y0-,y1-;xa-]
+\end{hse}
+
+\subsubsection*{PRS}
+
+\begin{prs2}
+~ya & x0 -> y0+
+ya & ~x0 -> y0-
+
+~ya & x1 -> y1+
+ya & ~x1 -> y1-
+\end{prs2}
+
+\begin{prs2}
+y0 | y1 -> xa+
+~y0 & ~y1 -> xa-
+\end{prs2}
+
+\subsubsection*{CMOS-implementable PRS version 0}
+
+\begin{prs2}
+_ya & x0 -> _y0-
+~_ya & ~x0 -> _y0+
+
+_ya & x1 -> _y1-
+~_ya & ~x1 -> _y1+
+\end{prs2}
+
+\begin{prs2}
+~_y0 | ~_y1 -> xa+
+_y0 & _y1 -> xa-
+\end{prs2}
+
+transistor count: 20
+
+\subsubsection*{CMOS-implementable PRS version 1}
+
+\begin{prs2}
+~ya & ~_x0 -> y0+
+ya & _x0 -> y0-
+
+~ya & ~_x1 -> y1+
+ya & _x1 -> y1-
+\end{prs2}
+
+\begin{prs2}
+y0 | y1 -> _xa-
+~y0 & ~y1 -> _xa+
+\end{prs2}
+
+transistor count: 20
+
+Alternate versions 0 and 1. These versions are a bit wonky with their use of
+staticizers and take their output as the input to staticizers.
+
+\subsubsection*{CMOS-implementable PRS version 2}
+
+With more conventional use of staticizers,
+
+\begin{prs2}
+_ya & x0 -> _y0-
+~_ya & ~x0 -> _y0+
+
+_ya & x1 -> _y1-
+~_ya & ~x1 -> _y1+
+\end{prs2}
+
+\begin{prs2}
+_y0 -> y0-
+~_y0 -> y0+
+
+_y1 -> y1-
+~_y1 -> y1+
+\end{prs2}
+
+\begin{prs2}
+y0 | y1 -> _xa-
+~y0 & ~y1 -> _xa+
+\end{prs2}
+
+transistor count: 20
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

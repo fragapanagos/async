@@ -5,7 +5,38 @@ import "test.act";
 
 namespace fifo {
     export
+    defproc PCFB (globals g; a1of<2> x, y) {
+        // pre-charge full buffer
+        bool en;
+        prs<g.Vdd, g.GND> {
+            (: n : 2 :
+                en & ~y.a & x.d[n] -> y.d[n]+
+                g.pReset | ~en & y.a -> y.d[n]-
+            )
+
+            en & (| : n : 2 : y.d[n]) -> x.a+
+            g.pReset | ~en & (& : n : 2 : ~x.d[n]) -> x.a-
+
+            (& : n : 2 : ~y.d[n]) & ~x.a -> en+
+            x.a -> en-
+        }
+    }
+
+    export
+    template <pint M>
+    defproc PCFB_CHAIN (globals g; a1of<2> x, y) {
+        PCFB _[M];
+        (; m : M : _[m].g = g;)
+        _[0].x = x;
+        _[M-1].y = y;
+        (; m : M-1 :
+            _[m].y = _[m+1].x;
+        )
+    }
+
+    export
     defproc NB (globals g; a1of<2> x, y) {
+        // no buffer
         prs<g.Vdd, g.GND> {
             (: n : 2 :
                 x.d[n] => y.d[n]+
@@ -28,6 +59,7 @@ namespace fifo {
 
     export
     defproc WCHB (globals g; a1of<2> x, y) {
+        // weak-condition half buffer
         prs<g.Vdd, g.GND> {
             (: n : 2 :
                 ~y.a & x.d[n] -> y.d[n]+

@@ -1,0 +1,33 @@
+import "globals.act";
+import "channel.act";
+import "environment.act";
+
+export
+defproc BITCELL (globals g; a1of2 d) {
+    bool bf, bt;
+    bool _da;
+    prs<g.Vdd, g.GND> {
+        [weak=1] bt => bf- // cross-coupled inverters
+        [weak=1] bf => bt-
+        d.f -> bt-
+        d.t -> bf-
+
+        ~d.f & ~d.t -> _da+
+        [weak=1] (d.f & bf) | (d.t & bt) -> _da-
+
+        [weak=1] d.a => _da- // staticizer
+
+        _da => d.a-
+    }
+}
+
+namespace test {
+    export
+    defproc TEST_BITCELL (globals g) {
+        BITCELL bit(g,);
+        SOURCE_random_a1of2 src(g, bit.d);
+    }
+} // namespace test
+
+globals g;
+test::TEST_BITCELL test(g);

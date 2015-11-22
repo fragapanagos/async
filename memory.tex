@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage{mystyle}
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bit cell}
+
+The basic unit of a memory is a bit cell. This circuit holds a single bit.
+Takes in and stores dual-rail, 1 hot data.
+
+BITCELL
+\begin{csp}
+*[D?u]
+\end{csp}
+
+\begin{hse}
+*[[df->bt-;bf+[]dt->bf-;bt+];da+;[~df&~dt];da-]
+\end{hse}
+
+\begin{prs2}
+bt -> bf-
+~bt -> bf+
+
+bf -> bt-
+~bf -> bt+
+\end{prs2}
+
+\begin{prs2}
+dt -> bf-
+df -> bt-
+\end{prs2}
+
+\begin{prs2}
+~dt & ~df -> _da+
+bf & df | bt & dt -> _da-
+
+_da -> da-
+~_da -> da+
+\end{prs2}
+
+16 transistors
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bit cell array}
+
+I could arrange as a 4*8=32. \\
+32 cells * 16 transistors / cell / 4 neurons = 128 transistors / neuron \\
+512 transistors / 4 neurons = 128 transistors / neuron \\
+Though 4*7=28 could also work as I just need 26 bits of configuration. \\
+28 cells * 16 transistors / cell / 4 neurons = 112 transistors / neuron \\
+
+If I assume no staticizer on the write acknowledge, it only costs 12 transistors.
+32 cells * 12 transistors / cell / 4 neurons = 96 transistors / neuron \\
+28 cells * 12 transistors / cell / 4 neurons = 84 transistors / neuron \\
+
+How would the neurons be stimulated? How will the data be addressed?
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

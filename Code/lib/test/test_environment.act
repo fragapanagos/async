@@ -1,0 +1,5 @@
+import "environment.act";
+
+globals g;
+test::TEST_SOURCE_aMx1ofN<2, 2> test_aMx1ofN(g);
+test::TEST_SOURCE_eMx1ofN<2, 2> test_eMx1ofN(g);

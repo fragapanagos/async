@@ -1,5 +1,5 @@
 // Defines N input logic gates
-import "lib/channel.act";
+import "channel.act";
 import "logic.h"; // forward declare functions
 
 export

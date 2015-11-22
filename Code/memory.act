@@ -21,13 +21,68 @@ defproc BITCELL (globals g; a1of2 d) {
     }
 }
 
+export
+defproc BITCELL_GATED (globals g; a1of2 d; bool we) {
+    bool bf, bt;
+    bool _da;
+    prs<g.Vdd, g.GND> {
+        [weak=1] bt => bf-
+        [weak=1] bf => bt-
+        d.f & we -> bt-
+        d.t & we -> bf-
+
+        ~d.f & ~d.t -> _da+
+        [weak=1] (d.f & bf & we) | (d.t & bt & we) -> _da-
+
+        [weak=1] d.a => _da-
+
+        _da => d.a-
+    }
+}
+
+export
+defproc BITCELL_GATED_CTRL (globals g; a1of2 x, y; bool we) {
+    // Controls an individual gated bitcell
+    x.d = y.d;
+    prs<g.Vdd, g.GND> {
+        x.d[0] | x.d[1] => we+
+
+        y.a -> x.a+
+        ~we & ~y.a -> x.a-
+    }
+}
+
+export
+template <pint XD, YW>
+defproc BITCELL_ARRAY (globals g; a1of2 d[XD]; bool we[YW]) {
+    // XD x YW array of gated bitcells
+    // XD data inputs
+    // YW words
+    BITCELL_GATED bits[XD][YW];
+    (;xd:XD:
+        (;yw:YW:
+            bits[xd][yw].g = g;
+            bits[xd][yw].d = d[xd];
+            bits[xd][yw].we = we[yw];
+        )
+    )
+}
+
 namespace test {
     export
     defproc TEST_BITCELL (globals g) {
         BITCELL bit(g,);
         SOURCE_random_a1of2 src(g, bit.d);
     }
+
+    export
+    defproc TEST_BITCELL_GATED (globals g) {
+        BITCELL_GATED bit(g,,);
+        BITCELL_GATED_CTRL ctrl(g,, bit.d, bit.we);
+        SOURCE_random_a1of2 src(g, ctrl.x);
+    }
 } // namespace test
 
 globals g;
-test::TEST_BITCELL test(g);
+// test::TEST_BITCELL test(g);
+test::TEST_BITCELL_GATED test(g);

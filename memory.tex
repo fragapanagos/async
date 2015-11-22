@@ -55,7 +55,64 @@ If I assume no staticizer on the write acknowledge, it only costs 12 transistors
 32 cells * 12 transistors / cell / 4 neurons = 96 transistors / neuron \\
 28 cells * 12 transistors / cell / 4 neurons = 84 transistors / neuron \\
 
-How would the neurons be stimulated? How will the data be addressed?
+BITCELL\_GATED
+\begin{csp}
+*[D?u]
+\end{csp}
+
+\begin{hse}
+*[[we];[df->bt-;bf+[]dt->bf-;bt+];da+;[~df&~dt];da-]
+\end{hse}
+
+\begin{prs2}
+bt -> bf-
+~bt -> bf+
+
+bf -> bt-
+~bf -> bt+
+\end{prs2}
+
+\begin{prs2}
+dt & we -> bf-
+df & we -> bt-
+\end{prs2}
+
+\begin{prs2}
+~dt & ~df -> _da+
+we & bf & df | we & bt & dt -> _da-
+
+_da -> da-
+~_da -> da+
+\end{prs2}
+
+BITCELL\_GATED\_CTRL
+\begin{csp}
+*[Y!(X?),w+;(Y,w)\star\!X];
+\end{csp}
+
+\begin{hse}
+*[[x0->y0+,we+;[wa];xa+;[~x0];y0-,we-;[~wa];xa-
+  []x1->y1+,we+;[wa];xa+;[~x1];y1-,we-;[~wa];xa-
+ ]]
+\end{hse}
+
+\begin{prs2}
+x0 -> y0+
+~x0 -> y0-
+
+x1 -> y1+
+~x1 -> y1-
+\end{prs2}
+
+\begin{prs2}
+x0 | x1 -> we+
+~x0 & ~x1 -> we-
+\end{prs2}
+
+\begin{prs2}
+wa -> xa+
+~we & ~wa -> xa-
+\end{prs2}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}

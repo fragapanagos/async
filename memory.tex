@@ -43,17 +43,94 @@ _da -> da-
 16 transistors
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Bit cell array}
+\section{Bit cell array (6T cells)}
 
-I could arrange as a 4*8=32. \\
-32 cells * 16 transistors / cell / 4 neurons = 128 transistors / neuron \\
-512 transistors / 4 neurons = 128 transistors / neuron \\
-Though 4*7=28 could also work as I just need 26 bits of configuration. \\
-28 cells * 16 transistors / cell / 4 neurons = 112 transistors / neuron \\
+BITCELL\_GATED
+\begin{csp}
+*[D?u]
+\end{csp}
 
-If I assume no staticizer on the write acknowledge, it only costs 12 transistors.
-32 cells * 12 transistors / cell / 4 neurons = 96 transistors / neuron \\
-28 cells * 12 transistors / cell / 4 neurons = 84 transistors / neuron \\
+\begin{hse}
+*[[we];[df->bt-;bf+[]dt->bf-;bt+];da+;[~df&~dt];da-]
+\end{hse}
+
+\begin{prs2}
+bt -> bf-
+~bt -> bf+
+
+bf -> bt-
+~bf -> bt+
+\end{prs2}
+
+\begin{prs2}
+df -> bt_-
+bt & we -> bt_+
+
+dt -> bf_-
+bf & we -> bf_+
+\end{prs2}
+
+\begin{prs2}
+~bf_ & we -> bf-
+~bt_ & we -> bt-
+\end{prs2}
+
+\begin{prs2}
+~dt & ~df -> _da+
+df & bf_ | dt & bt_ -> _da-
+
+_da -> da-
+~_da -> da+
+\end{prs2}
+
+6 transistors per core \\
+8 transistors per data line pair \\
+4 transistors to staticize the write acknowledge \\
+
+Consider the case of 32 bits per 4 neurons. \\
+32 cells * 1 core / cell * 6 transistors / core = 192 transistors \\
+
+Organize as 8 write-enable lines and 4 data line pairs \\
+8 transistors / data line pair * 4 data line pairs = 32 transistors \\
+192 + 32 = 224 transistors \\
+224 transistors / 4 neurons = \textbf{56 transitors / neuron} \\
+
+Organize as 32 write-enable lines and 1 data line pairs \\
+8 transistors / data line pair * 1 data line pairs = 8 transistors \\
+192 + 8 = 200 transistors \\
+200 transistors / 4 neurons = \textbf{50 transitors / neuron} \\
+
+BITCELL\_GATED\_CTRL
+\begin{csp}
+*[Y!(X?),w+;(Y,w)\star\!X];
+\end{csp}
+
+\begin{hse}
+*[[x0->y0+,we+;[wa];xa+;[~x0];y0-,we-;[~wa];xa-
+  []x1->y1+,we+;[wa];xa+;[~x1];y1-,we-;[~wa];xa-
+ ]]
+\end{hse}
+
+\begin{prs2}
+x0 -> y0+
+~x0 -> y0-
+
+x1 -> y1+
+~x1 -> y1-
+\end{prs2}
+
+\begin{prs2}
+x0 | x1 -> we+
+~x0 & ~x1 -> we-
+\end{prs2}
+
+\begin{prs2}
+we & wa -> xa+
+~we & ~wa -> xa-
+\end{prs2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bit cell array (8T cells)}
 
 BITCELL\_GATED
 \begin{csp}
@@ -84,6 +161,23 @@ we & bf & df | we & bt & dt -> _da-
 _da -> da-
 ~_da -> da+
 \end{prs2}
+
+8 transistors per core \\
+8 transistors per data line pair \\
+4 transistors to staticize the write acknowledge \\
+
+Consider the case of 32 bits per 4 neurons. \\
+32 cells * 1 core / cell * 8 transistors / core = 256 transistors \\
+
+Organize as 8 write-enable lines and 4 data line pairs \\
+8 transistors / data line pair * 4 data line pairs = 32 transistors \\
+256 + 32 = 288 transistors \\
+288 transistors / 4 neurons = \textbf{72 transitors / neuron} \\
+
+Organize as 32 write-enable lines and 1 data line pairs \\
+8 transistors / data line pair * 1 data line pairs = 8 transistors \\
+256 + 8 = 264 transistors \\
+264 transistors / 4 neurons = \textbf{66 transitors / neuron} \\
 
 BITCELL\_GATED\_CTRL
 \begin{csp}

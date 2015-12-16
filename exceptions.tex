@@ -55,7 +55,10 @@ ste & sfe -> se+
 ~ste | ~sfe -> se-
 \end{prs2}
 
-What if we moved the $ste$ after?
+\noindent
+The $ste\uparrow$ and $[\neg c]$ events can overlap in time before $ce\uparrow$.
+If we moved the $ste\uparrow$ to after the $[\neg c]$, 
+we can implement the hse with fewer transistors at the cost of delaying the $ce\uparrow$ event.
 
 \begin{hse}
 *[[cr->c+;[~cr];c-
@@ -68,6 +71,24 @@ What if we moved the $ste$ after?
 
 *[[~ste|~sfe];se-;[ste&sfe];se+]
 \end{hse}
+
+\begin{prs2}
+~c -> ste+
+c & sr -> ste-
+
+~s -> sfe+
+s -> sfe-
+\end{prs2}
+
+\begin{prs2}
+ste | sr -> ce+
+~ste & ~sr -> ce-
+\end{prs2}
+
+\begin{prs2}
+ste & sfe -> se+
+~ste | ~sfe -> se-
+\end{prs2}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{$C$ request/enable, $S$ request/acknowledge}

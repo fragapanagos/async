@@ -1,27 +1,63 @@
 import "environment.act";
 import "arbiter.act";
 
-export
-defproc CIE_SIE (globals g; bool ci, ce, si, se) {
+defproc CIE_SIE_fast (globals g; bool cr, ce, sr, se) {
+    // *[[cr->c+;[~cr];c- | sr->s+;[~sr];s-]]
+    // *[[c->[sr];ste-;[~sr];ce-;ste+;[~c];ce+
+    //   []s->sfe-;[~s];sfe+
+    //  ]]
+    // *[[~ste|~sfe];se-;[ste&sfe];se+]
     arbiter::ARB arb(,);
-    arb.i[0] = ci;
-    arb.i[1] = si;
+    arb.i[0] = cr;
+    arb.i[1] = sr;
     bool c = arb.o[0];
     bool s = arb.o[1];
     bool ste, sfe;
 
     prs <g.Vdd, g.GND> {
         g.pReset | ~ce -> ste+
-        ce & c & si -> ste-
+        ce & c & sr -> ste-
 
         ~s -> sfe+
         s -> sfe-
 
         ste & ~c -> ce+
-        ~ste & ~si -> ce-
+        ~ste & ~sr -> ce-
 
         ste & sfe => se+
     }
+}
+
+defproc CIE_SIE_cheap (globals g; bool cr, ce, sr, se) {
+    // *[[cr->c+;[~cr];c- | sr->s+;[~sr];s-]]
+    // *[[c->[sr];ste-;[~sr];ce-;[~c];ste+;ce+
+    //   []s->sfe-;[~s];sfe+
+    //  ]]
+    // *[[~ste|~sfe];se-;[ste&sfe];se+]
+    arbiter::ARB arb(,);
+    arb.i[0] = cr;
+    arb.i[1] = sr;
+    bool c = arb.o[0];
+    bool s = arb.o[1];
+    bool ste, sfe;
+
+    prs <g.Vdd, g.GND> {
+        g.pReset | ~c -> ste+
+        c & sr -> ste-
+
+        ~s -> sfe+
+        s -> sfe-
+
+        ste | sr => ce+
+
+        ste & sfe => se+
+    }
+}
+
+export
+defproc CIE_SIE (globals g; bool cr, ce, sr, se) {
+    // CIE_SIE_fast _(g, cr, ce, sr, se);
+    CIE_SIE_cheap _(g, cr, ce, sr, se);
 }
 
 namespace test {

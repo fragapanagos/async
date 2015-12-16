@@ -1,0 +1,37 @@
+import "environment.act";
+import "arbiter.act";
+
+export
+defproc CIE_SIE (globals g; bool ci, ce, si, se) {
+    arbiter::ARB arb(,);
+    arb.i[0] = ci;
+    arb.i[1] = si;
+    bool c = arb.o[0];
+    bool s = arb.o[1];
+    bool ste, sfe;
+
+    prs <g.Vdd, g.GND> {
+        g.pReset | ~ce -> ste+
+        ce & c & si -> ste-
+
+        ~s -> sfe+
+        s -> sfe-
+
+        ste & ~c -> ce+
+        ~ste & ~si -> ce-
+
+        ste & sfe => se+
+    }
+}
+
+namespace test {
+    export
+    defproc CIE_SIE (globals g) {
+        SOURCE_random_e1of1 c(g,);
+        SOURCE_random_e1of1 p(g,);
+        ::CIE_SIE _(g, c.d.d, c.d.e, p.d.d, p.d.e);
+    }
+} // namespace test
+
+globals g;
+test::CIE_SIE test(g);

@@ -21,34 +21,98 @@ defproc BITCELL (globals g; a1of2 d) {
     }
 }
 
-export
-defproc BITCELL_GATED_6T (globals g; a1of2 d; bool we) {
+defproc BITCELL_6T_CORE (globals g; bool bf_, bt_, we) {
     bool bf, bt;
-    bool bf_, bt_;
-    bool _da;
     prs<g.Vdd, g.GND> {
         // cross-coupled inverters
         [weak=1] bt => bf-
         [weak=1] bf => bt-
+
+        // pass transistors
+        passn (we, bf, bf_)
+        passn (we, bt, bt_)
+        passn (we, bf_, bf)
+        passn (we, bt_, bt)
+    }
+}
+
+export
+template <pint XD, YW>
+defproc BITCELL_ARRAY_6T (globals g; aMx1ofN<XD, 2> d; bool we[YW]) {
+    bool bf_[XD], bt_[XD];
+    bool _da;
+
+    BITCELL_6T_CORE bits[XD][YW];
+    (;xd:XD:
+        (;yw:YW:
+            bits[xd][yw].g = g;
+            bits[xd][yw].bf_ = bf_[xd];
+            bits[xd][yw].bt_ = bt_[xd];
+            bits[xd][yw].we = we[yw];
+        )
+    )
+
+    OR<2*XD> d_or(g,,);
+    (;xd:XD: 
+        d_or.i[2*xd] = d.m[xd].d[0];
+        d_or.i[2*xd+1] = d.m[xd].d[1];
+    )
+
+    prs<g.Vdd, g.GND> {
+        (:xd:XD:
+            [weak=1] d.m[xd].d[0] -> bt_[xd]-
+            [weak=1] d.m[xd].d[1] -> bf_[xd]-
+        )
+
+        ~d_or.o -> _da+
+        [weak=1] (|:xd:XD: bf_[xd] & d.m[xd].d[0]) | (|:xd:XD: bt_[xd] & d.m[xd].d[1]) & d_or.o -> _da-
     
-        d.t -> bf_-
-        [weak=1] bf & we -> bf_+
-    
-        d.f -> bt_-
-        [weak=1] bt & we -> bt_+
-    
-        [weak=1] ~bf_ & we -> bf-
-        [weak=1] ~bt_ & we -> bt-
-    
-        ~d.f & ~d.t -> _da+
-        [weak=1] d.f & bf_ | d.t & bt_ -> _da-
-    
-        // staticizer
-        [weak=1] d.a => _da-
+        // // staticizer
+        // [weak=1] d.a => _da-
     
         _da => d.a-
     }
 }
+
+export
+defproc BITCELL_GATED_6T (globals g; a1of2 d; bool we) {
+    // a single gated 6-transistor bitcell
+    BITCELL_ARRAY_6T<1,1> _(g,,);
+    _.d.m[0].d = d.d;
+    _.d.a = d.a;
+    _.we[0] = we;
+}
+
+/*
+    export
+    defproc BITCELL_GATED_6T (globals g; a1of2 d; bool we) {
+        bool bf, bt;
+        bool bf_, bt_;
+        bool _da;
+        prs<g.Vdd, g.GND> {
+            // cross-coupled inverters
+            [weak=1] bt => bf-
+            [weak=1] bf => bt-
+        
+            d.t -> bf_-
+            [weak=1] bf & we -> bf_+
+        
+            d.f -> bt_-
+            [weak=1] bt & we -> bt_+
+        
+            [weak=1] ~bf_ & we -> bf-
+            [weak=1] ~bt_ & we -> bt-
+        
+            ~d.f & ~d.t -> _da+
+            [weak=1] d.f & bf_ | d.t & bt_ -> _da-
+        
+            // staticizer
+            [weak=1] d.a => _da-
+        
+            _da => d.a-
+        }
+    }
+*/
 
 export
 defproc BITCELL_GATED_8T (globals g; a1of2 d; bool we) {
@@ -134,6 +198,6 @@ namespace test {
 } // namespace test
 
 globals g;
-test::TEST_BITCELL test_bc(g);
-test::TEST_BITCELL_GATED_6T test_bcg6t(g);
-test::TEST_BITCELL_GATED_8T test_bcg8t(g);
+// test::TEST_BITCELL test_bc(g);
+test::TEST_BITCELL_GATED_6T test(g);
+// test::TEST_BITCELL_GATED_8T test_bcg8t(g);

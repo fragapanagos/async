@@ -1,0 +1,91 @@
+\documentclass{article}
+\usepackage{mystyle}
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Variations on Precise Exceptions}
+
+It's not so much about with or without data. 
+Either way output $S$ gonna be bundled...
+
+\begin{csp}
+*[[#C->S;C
+  \|#S->S]]
+\end{csp}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{$C$ request/enable, $S$ request/enable}
+
+\begin{hse}
+*[[cr->[sr];se-;[~sr];ce-;se+;[~cr];ce+
+  \|sr->se-;[~sr];se+
+ ]]
+\end{hse}
+
+\begin{hse}
+*[[cr->c+;[~cr];c-
+  \|sr->s+;[~sr];s-
+ ]]
+
+*[[c->[sr];ste-;[~sr];ce-;ste+;[~c];ce+
+  []s->sfe-;[~s];sfe+
+ ]]
+
+*[[~ste|~sfe];se-;[ste&sfe];se+]
+\end{hse}
+
+\begin{prs2}
+~ce -> ste+
+ce & c & sr -> ste-
+
+~s -> sfe+
+s -> sfe-
+\end{prs2}
+
+\begin{prs2}
+ste & ~c -> ce+
+~ste & ~sr -> ce-
+\end{prs2}
+
+\begin{prs2}
+ste & sfe -> se+
+~ste | ~sfe -> se-
+\end{prs2}
+
+What if we moved the $ste$ after?
+
+\begin{hse}
+*[[cr->c+;[~cr];c-
+  \|sr->s+;[~sr];s-
+ ]]
+
+*[[c->[sr];ste-;[~sr];ce-;[~c];ste+;ce+
+  []s->sfe-;[~s];sfe+
+ ]]
+
+*[[~ste|~sfe];se-;[ste&sfe];se+]
+\end{hse}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{$C$ request/enable, $S$ request/acknowledge}
+
+\begin{hse}
+*[[cr->[sr];sa+;[~sr];ce-;sa-;[~cr];ce+
+  \|sr->sa+;[~sr];sa-
+ ]]
+\end{hse}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{$C$ request/acknowledge, $S$ request/acknowledge}
+
+\begin{hse}
+*[[cr->[sr];sa+;[~sr];ca+;sa-;[~cr];ca-
+  \|sr->sa+;[~sr];sa-
+ ]]
+\end{hse}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

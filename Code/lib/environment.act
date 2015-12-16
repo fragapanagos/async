@@ -48,6 +48,14 @@ defproc SOURCE_random_a1of2 (globals g; a1of2 d) {
     src.d.a = d.a;
 }
 
+export
+defproc SOURCE_random_a1of1 (globals g; a1of1 d) {
+    // sources random a1of1 data
+    SOURCE_random_aMx1ofN<1, 1> src(g,);
+    src.d.m[0].d[0] = d.d;
+    src.d.a = d.a;
+}
+
 /*---------------------------------------------------------------------------*/
 
 export
@@ -98,7 +106,7 @@ defproc SOURCE_random_e1of2 (globals g; e1of2 d) {
 
 export
 defproc SOURCE_random_e1of1 (globals g; e1of1 d) {
-    // sources random e1of2 data
+    // sources random e1of1 data
     SOURCE_random_eMx1ofN<1, 1> src(g,);
     src.d.m[0].d[0] = d.d;
     src.d.e = d.e;

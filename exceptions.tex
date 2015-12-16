@@ -3,27 +3,23 @@
 
 \begin{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Variations on Precise Exceptions}
-
-It's not so much about with or without data. 
-Either way output $S$ gonna be bundled...
+\section{Precise Exceptions}
 
 \begin{csp}
 *[[#C->S;C
   \|#S->S]]
 \end{csp}
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{$C$ request/enable, $S$ request/enable}
+We'll use a request/enable scheme for now. [May change with bubble reshuffling]
 
 \begin{hse}
 *[[cr->[sr];se-;[~sr];ce-;se+;[~cr];ce+
   \|sr->se-;[~sr];se+
  ]]
 \end{hse}
+
+\noindent
+break out nondeterministic selection
 
 \begin{hse}
 *[[cr->c+;[~cr];c-
@@ -90,23 +86,8 @@ ste & sfe -> se+
 ~ste | ~sfe -> se-
 \end{prs2}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{$C$ request/enable, $S$ request/acknowledge}
-
-\begin{hse}
-*[[cr->[sr];sa+;[~sr];ce-;sa-;[~cr];ce+
-  \|sr->sa+;[~sr];sa-
- ]]
-\end{hse}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{$C$ request/acknowledge, $S$ request/acknowledge}
-
-\begin{hse}
-*[[cr->[sr];sa+;[~sr];ca+;sa-;[~cr];ca-
-  \|sr->sa+;[~sr];sa-
- ]]
-\end{hse}
+\noindent
+We'll do the cheap implementation from here.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}

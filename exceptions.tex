@@ -57,6 +57,15 @@ If we moved the $ste\uparrow$ to after the $[\neg c]$,
 we can implement the hse with fewer transistors at the cost of delaying the $ce\uparrow$ event.
 
 \begin{hse}
+*[[cr->[sr];se-;[~sr];ce-;[~cr];se+;ce+
+  \|sr->se-;[~sr];se+
+ ]]
+\end{hse}
+
+\noindent
+break out nondeterministic selection
+
+\begin{hse}
 *[[cr->c+;[~cr];c-
   \|sr->s+;[~sr];s-
  ]]
